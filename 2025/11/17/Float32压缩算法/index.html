@@ -1,0 +1,257 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Float32压缩算法 | Hexo</title><meta name="author" content="Shin"><meta name="copyright" content="Shin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="数据压缩是游戏中常用的一种减少数据量的方式，简单的数据压缩如将float32位压缩到float16的半精度压缩，如Unity的分享案例：  这里要介绍的是，将不同的几位数据，根据压缩和解码存储到一个Float32位中，同时给出使用案例场景进行分析。 一、Float32法线压缩将一个 Vector3 单位向量压缩成一个 float32 进行存储。这个压缩方案使用了 30位 来存储三个 10位有符号整">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Float32压缩算法">
+<meta property="og:url" content="https://shinzm.github.io/2025/11/17/Float32%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="数据压缩是游戏中常用的一种减少数据量的方式，简单的数据压缩如将float32位压缩到float16的半精度压缩，如Unity的分享案例：  这里要介绍的是，将不同的几位数据，根据压缩和解码存储到一个Float32位中，同时给出使用案例场景进行分析。 一、Float32法线压缩将一个 Vector3 单位向量压缩成一个 float32 进行存储。这个压缩方案使用了 30位 来存储三个 10位有符号整">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shinzm.github.io/img/float32/octahedron.png">
+<meta property="article:published_time" content="2025-11-17T01:45:00.000Z">
+<meta property="article:modified_time" content="2026-10-25T11:39:02.429Z">
+<meta property="article:author" content="Shin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shinzm.github.io/img/float32/octahedron.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Float32压缩算法",
+  "url": "https://shinzm.github.io/2025/11/17/Float32%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/",
+  "image": "https://shinzm.github.io/img/float32/octahedron.png",
+  "datePublished": "2025-11-17T01:45:00.000Z",
+  "dateModified": "2026-10-25T11:39:02.429Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Shin",
+      "url": "https://shinzm.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://shinzm.github.io/2025/11/17/Float32%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.1.260810"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Float32压缩算法',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/float32/octahedron.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">Float32压缩算法</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Float32压缩算法</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-17T01:45:00.000Z" title="Created 2025-11-17 09:45:00">2025-11-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-10-25T11:39:02.429Z" title="Updated 2026-10-25 19:39:02">2026-10-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>数据压缩是游戏中常用的一种减少数据量的方式，简单的数据压缩如将float32位压缩到float16的半精度压缩，如Unity的分享案例：</p>
+<p><img src="/img/float32/float32.png" alt="Unity半精度压缩"></p>
+<p>这里要介绍的是，将不同的几位数据，根据压缩和解码存储到一个Float32位中，同时给出使用案例场景进行分析。</p>
+<h2 id="一、Float32法线压缩"><a href="#一、Float32法线压缩" class="headerlink" title="一、Float32法线压缩"></a>一、Float32法线压缩</h2><p>将一个 Vector3 单位向量压缩成一个 float32 进行存储。这个压缩方案使用了 <strong>30位</strong> 来存储三个 <strong>10位有符号整数</strong>（每个分量）。</p>
+<h3 id="压缩算法（C-）"><a href="#压缩算法（C-）" class="headerlink" title="压缩算法（C#）"></a>压缩算法（C#）</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">float</span> <span class="title">CompressNormal</span>(<span class="params">Vector3 normal</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 将每个分量量化为10位有符号整数</span></span><br><span class="line">    <span class="built_in">int</span> x = Mathf.RoundToInt(normal.x / <span class="number">0.002f</span>);</span><br><span class="line">    <span class="built_in">int</span> y = Mathf.RoundToInt(normal.y / <span class="number">0.002f</span>);</span><br><span class="line">    <span class="built_in">int</span> z = Mathf.RoundToInt(normal.z / <span class="number">0.002f</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 限制在10位有符号范围内 (-512 到 511)</span></span><br><span class="line">    x = Mathf.Clamp(x, <span class="number">-512</span>, <span class="number">511</span>);</span><br><span class="line">    y = Mathf.Clamp(y, <span class="number">-512</span>, <span class="number">511</span>);</span><br><span class="line">    z = Mathf.Clamp(z, <span class="number">-512</span>, <span class="number">511</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将每个10位值转换为无符号形式</span></span><br><span class="line">    <span class="built_in">uint</span> xBits = (<span class="built_in">uint</span>)(x &amp; <span class="number">0x3FF</span>);</span><br><span class="line">    <span class="built_in">uint</span> yBits = (<span class="built_in">uint</span>)(y &amp; <span class="number">0x3FF</span>);</span><br><span class="line">    <span class="built_in">uint</span> zBits = (<span class="built_in">uint</span>)(z &amp; <span class="number">0x3FF</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 组合所有位</span></span><br><span class="line">    <span class="built_in">uint</span> packedValue = (xBits &lt;&lt; <span class="number">22</span>) | (yBits &lt;&lt; <span class="number">12</span>) | (zBits &lt;&lt; <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 转换为float</span></span><br><span class="line">    <span class="keyword">return</span> BitConverter.ToSingle(BitConverter.GetBytes(packedValue), <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="解压算法（C-）"><a href="#解压算法（C-）" class="headerlink" title="解压算法（C#）"></a>解压算法（C#）</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Vector4 <span class="title">DecompressNormal</span>(<span class="params"><span class="built_in">float</span> compressedValue</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">uint</span> compressedValueInt = System.BitConverter.ToUInt32(System.BitConverter.GetBytes(compressedValue), <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分别计算 x, y, z 轴的 normalOSInt</span></span><br><span class="line">    <span class="built_in">int</span> x = Extract10BitSigned(compressedValueInt, <span class="number">22</span>);  <span class="comment">// 0-9 bit</span></span><br><span class="line">    <span class="built_in">int</span> y = Extract10BitSigned(compressedValueInt, <span class="number">12</span>);  <span class="comment">// 10-19 bit</span></span><br><span class="line">    <span class="built_in">int</span> z = Extract10BitSigned(compressedValueInt, <span class="number">2</span>);   <span class="comment">// 20-29 bit</span></span><br><span class="line"></span><br><span class="line">    Vector3 normal;</span><br><span class="line">    normal.x = x * <span class="number">0.002f</span>;</span><br><span class="line">    normal.y = y * <span class="number">0.002f</span>;</span><br><span class="line">    normal.z = z * <span class="number">0.002f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> normal;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">Extract10BitSigned</span>(<span class="params"><span class="built_in">uint</span> <span class="keyword">value</span>, <span class="built_in">int</span> offset</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">int</span> bits = (<span class="built_in">int</span>)(<span class="keyword">value</span> &lt;&lt; offset);</span><br><span class="line">    <span class="keyword">return</span> bits &gt;&gt; <span class="number">22</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、八面体法线压缩"><a href="#二、八面体法线压缩" class="headerlink" title="二、八面体法线压缩"></a>二、八面体法线压缩</h2><p>为了节省带宽，常见的一个做法是将三维法线数据用二维来进行压缩，而由于法线通常是单位长度的，因此也为这种压缩提供了可能。</p>
+<p>UE中有一种常用的压缩编码方式是来自于 Cigolle 2014年发表的 <em>A Survey of Efficient Representations for Independent Unit Vectors</em> 论文中的名叫 <strong>Octahedron Normal Vectors</strong> 的编码方法。</p>
+<p>这种压缩编码的原理是将法线看成是一个单位球面上的点，以这个球的球心为中心点，可以构建一个正八面体，那么球面上的任意点刚好可以实现与正八面体的面上的某一点（称之为投影点）一一对应，根据这个原理将法线对应的点与球心连线，与正八面体的交点就是投影点。</p>
+<p><img src="/img/float32/octahedron.png" alt="八面体法线压缩原理"></p>
+<h3 id="压缩算法"><a href="#压缩算法" class="headerlink" title="压缩算法"></a>压缩算法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">float2 OctWrap(float2 v)</span><br><span class="line">&#123;</span><br><span class="line">    return (1.0 - abs(v.yx)) * (v.xy &gt;= 0.0 ? 1.0 : -1.0);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">float2 Encode(float3 n)</span><br><span class="line">&#123;</span><br><span class="line">    n /= (abs(n.x) + abs(n.y) + abs(n.z));</span><br><span class="line">    n.xy = n.z &gt;= 0.0 ? n.xy : OctWrap(n.xy);</span><br><span class="line">    n.xy = n.xy * 0.5 + 0.5;</span><br><span class="line">    return n.xy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="解码算法"><a href="#解码算法" class="headerlink" title="解码算法"></a>解码算法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">float3 Decode(float2 f)</span><br><span class="line">&#123;</span><br><span class="line">    f = f * 2.0 - 1.0;</span><br><span class="line"></span><br><span class="line">    // https://twitter.com/Stubbesaurus/status/937994790553227264</span><br><span class="line">    float3 n = float3(f.x, f.y, 1.0 - abs(f.x) - abs(f.y));</span><br><span class="line">    float t = saturate(-n.z);</span><br><span class="line">    n.xy += n.xy &gt;= 0.0 ? -t : t;</span><br><span class="line">    return normalize(n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可视化原理可参考：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV15csWzTEyV/">读取鸣潮角色里的平滑法线|八面体法线压缩</a></p>
+<h2 id="三、2D-GPU动画顶点数据压缩"><a href="#三、2D-GPU动画顶点数据压缩" class="headerlink" title="三、2D GPU动画顶点数据压缩"></a>三、2D GPU动画顶点数据压缩</h2><p>我们可以将通道数据的有效值设定在一个范围内，并用一个float32位按需分配给不同的通道，从而进行数据压缩。如下GPU动画压缩案例：</p>
+<ul>
+<li><strong>x 和 y</strong>：有符号浮点数（[-32, 32]），各 <strong>12位</strong></li>
+<li><strong>z 和 w</strong>：无符号浮点数（[0, 1]），各 <strong>4位</strong></li>
+</ul>
+<h3 id="压缩代码（C-）"><a href="#压缩代码（C-）" class="headerlink" title="压缩代码（C#）"></a>压缩代码（C#）</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">float</span> <span class="title">CompressData</span>(<span class="params"><span class="built_in">float</span> x, <span class="built_in">float</span> y, <span class="built_in">float</span> z, <span class="built_in">float</span> w</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1. 将x,y从[-32,32]映射到12-bit有符号整数[-2048,2047]</span></span><br><span class="line">    <span class="built_in">int</span> xInt = Mathf.RoundToInt(x * <span class="number">64f</span>);  <span class="comment">// 32/2048 = 0.015625, 1/0.015625=64</span></span><br><span class="line">    <span class="built_in">int</span> yInt = Mathf.RoundToInt(y * <span class="number">64f</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 将z,w从[0,1]映射到4-bit无符号整数[0,15]</span></span><br><span class="line">    <span class="built_in">int</span> zInt = Mathf.RoundToInt(z * <span class="number">15f</span>);</span><br><span class="line">    <span class="built_in">int</span> wInt = Mathf.RoundToInt(w * <span class="number">15f</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 限制范围</span></span><br><span class="line">    xInt = Mathf.Clamp(xInt, <span class="number">-2048</span>, <span class="number">2047</span>);</span><br><span class="line">    yInt = Mathf.Clamp(yInt, <span class="number">-2048</span>, <span class="number">2047</span>);</span><br><span class="line">    zInt = Mathf.Clamp(zInt, <span class="number">0</span>, <span class="number">15</span>);</span><br><span class="line">    wInt = Mathf.Clamp(wInt, <span class="number">0</span>, <span class="number">15</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 转换为无符号位形式</span></span><br><span class="line">    <span class="built_in">uint</span> xBits = (<span class="built_in">uint</span>)(xInt &amp; <span class="number">0xFFF</span>);  <span class="comment">// 取低12位</span></span><br><span class="line">    <span class="built_in">uint</span> yBits = (<span class="built_in">uint</span>)(yInt &amp; <span class="number">0xFFF</span>);</span><br><span class="line">    <span class="built_in">uint</span> zBits = (<span class="built_in">uint</span>)(zInt &amp; <span class="number">0xF</span>);    <span class="comment">// 取低4位</span></span><br><span class="line">    <span class="built_in">uint</span> wBits = (<span class="built_in">uint</span>)(wInt &amp; <span class="number">0xF</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 组合位数据（总32位）</span></span><br><span class="line">    <span class="built_in">uint</span> packed = (xBits &lt;&lt; <span class="number">20</span>) | (yBits &lt;&lt; <span class="number">8</span>) | (zBits &lt;&lt; <span class="number">4</span>) | wBits;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 6. 转换为float</span></span><br><span class="line">    <span class="keyword">return</span> BitConverter.ToSingle(BitConverter.GetBytes(packed), <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="解码代码（Shader-HLSL）"><a href="#解码代码（Shader-HLSL）" class="headerlink" title="解码代码（Shader HLSL）"></a>解码代码（Shader HLSL）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">inline float4 DecompressVatPosition(uint vertexId, float animationTime)</span><br><span class="line">&#123;</span><br><span class="line">    float vatposition = tex2Dlod(_VatPositionTex, CalcVatTexCoord(vertexId, animationTime)).r;</span><br><span class="line">    // 将 float 转换为 uint 进行位操作</span><br><span class="line">    uint packed = asuint(vatposition);</span><br><span class="line"></span><br><span class="line">    // 2. 提取各分量</span><br><span class="line">    uint xBits = (packed &gt;&gt; 20) &amp; 0xFFF;  // 12-bit x</span><br><span class="line">    uint yBits = (packed &gt;&gt; 8)  &amp; 0xFFF;  // 12-bit y</span><br><span class="line">    uint zBits = (packed &gt;&gt; 4)  &amp; 0xF;    // 4-bit z</span><br><span class="line">    uint wBits = packed &amp; 0xF;            // 4-bit w</span><br><span class="line"></span><br><span class="line">    // 3. 将有符号整数转换回[-2048,2047]</span><br><span class="line">    int xInt = int((xBits ^ 0x800) - 0x800); // 12-bit有符号处理</span><br><span class="line">    int yInt = int((yBits ^ 0x800) - 0x800); // 12-bit有符号处理</span><br><span class="line"></span><br><span class="line">    // 4. 映射回原始范围</span><br><span class="line">    float x = xInt / 64.0f;    // [-2048,2047] → [-32,31.984375]</span><br><span class="line">    float y = yInt / 64.0f;</span><br><span class="line">    float z = zBits / 15.0f;   // [0,15] → [0,1]</span><br><span class="line">    float w = wBits / 15.0f;</span><br><span class="line"></span><br><span class="line">    return float4(x, y, z, w);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="精度计算"><a href="#精度计算" class="headerlink" title="精度计算"></a>精度计算</h3><ul>
+<li><strong>xy精度</strong>：64&#x2F;4096 &#x3D; 0.015625</li>
+<li><strong>zw精度</strong>：1&#x2F;15 ≈ 0.066667</li>
+</ul>
+<h3 id="压缩前后对比"><a href="#压缩前后对比" class="headerlink" title="压缩前后对比"></a>压缩前后对比</h3><p><img src="/img/float32/before_compress.png" alt="压缩前"></p>
+<p><img src="/img/float32/after_compress.png" alt="压缩后"></p>
+<h2 id="四、平台差异"><a href="#四、平台差异" class="headerlink" title="四、平台差异"></a>四、平台差异</h2><p>算法压缩后的float类型如果需要在shader中读取贴图进行解码时，不同显卡可能会导致不一样的精度误差，可能会导致数据的不准确，需谨慎使用。</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>AMD精度误差</th>
+<th>NVIDIA精度误差</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>原始tex2Dlod</td>
+<td>±0.01</td>
+<td>±0.0001</td>
+</tr>
+</tbody></table>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/677238789/">https://zhuanlan.zhihu.com/p/677238789</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://shinzm.github.io">Shin</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://shinzm.github.io/2025/11/17/Float32%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/">https://shinzm.github.io/2025/11/17/Float32%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/float32/octahedron.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/23/%E8%87%AA%E5%AE%9A%E4%B9%89Tonemapping/" title="自定义Tonemapping"><img class="cover" src="/img/tonemapping/Log2Tonemap16.9.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">自定义Tonemapping</div></div><div class="info-2"><div class="info-item-1">前言将高动态范围的颜色映射到低动态范围上，同时保证色彩差异较原画面较小，保证美术在色彩上的把控。 Unity内置的Tonemapping有Natural和ACES，其中普通的ACES会导致图片的色调变化过大，所以在卡通渲染中tonemap的曲线在0到0.5之间，一般保持线性更为合理。 除了内置的两种外，以下列举一些其他的Tonemapping方式。 NAESTonemap使用一个运算性能较好的多项式tonmapper函数，去拟合一个美术容易调整但是不易实时计算的离线tonemapper函数。 tonemapping拟合函数 (Ax² + Bx) &#x2F; (Cx² + Dx + 1)  使用式子(Ax^2 + Bx)&#x2F;(Cx^2+Dx+1)解决移动平台的tonemapping问题  参考仿原神渲染的视频我们可以发现，原神的色调映射算法同样用了此公式来实现色调映射。  Unity|图形学 接近100%还原的仿原神渲染：渲染后处理技术  核心代码： 12345half3 NAESTonemap(half3 input)&#123;    input=(1.36*inpu...</div></div></div></a><a class="pagination-related" href="/2025/07/31/%E8%83%BD%E9%87%8F%E7%9B%BE/" title="能量盾"><img class="cover" src="/img/shield/ripple.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">能量盾</div></div><div class="info-2"><div class="info-item-1">一、分析对能量盾的渲染进行拆解。  渲染部分：基础颜色、表面纹理。 交互部分：消融、涟漪效果。  虽然内容不多，可拓展性还是很大的。 二、基础颜色能量盾基础颜色主要为底色和边缘光。底色不用提，半透明材质给个颜色即可，边缘光即 Fresnel。在两个值之间插值过渡。 123//fresnelhalf rim = pow(1 - abs(dot(normalDir, viewDir)), _RimPower) * _RimInt;half4 range = _RimCol * lerp(_BaseInt, 1, rim);   能量罩的大形就已经有了，后续只需要在此基础上添加细节即可。  可以看到在能量罩与其他物体的交界处，接缝较为明显，没有边缘光。我们可以通过当前能量罩的深度和场景的深度做对比，当深度相等时，则说明能量罩和物体是相交的。如果我们将两个深度的插值控制在一定范围内，则可以得到从交接部分向外延伸的部分。 123456789//verto.scrPos = ComputeScreenPos(o.vertex);COMPUTE_EYEDEPTH(o.scrPos.z);//f...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://github.com/shinzm.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Shin</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/shinzm" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81Float32%E6%B3%95%E7%BA%BF%E5%8E%8B%E7%BC%A9"><span class="toc-number">1.</span> <span class="toc-text">一、Float32法线压缩</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95%EF%BC%88C-%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">压缩算法（C#）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%8E%8B%E7%AE%97%E6%B3%95%EF%BC%88C-%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">解压算法（C#）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%85%AB%E9%9D%A2%E4%BD%93%E6%B3%95%E7%BA%BF%E5%8E%8B%E7%BC%A9"><span class="toc-number">2.</span> <span class="toc-text">二、八面体法线压缩</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95"><span class="toc-number">2.1.</span> <span class="toc-text">压缩算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E7%A0%81%E7%AE%97%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">解码算法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%812D-GPU%E5%8A%A8%E7%94%BB%E9%A1%B6%E7%82%B9%E6%95%B0%E6%8D%AE%E5%8E%8B%E7%BC%A9"><span class="toc-number">3.</span> <span class="toc-text">三、2D GPU动画顶点数据压缩</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E4%BB%A3%E7%A0%81%EF%BC%88C-%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">压缩代码（C#）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E7%A0%81%E4%BB%A3%E7%A0%81%EF%BC%88Shader-HLSL%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">解码代码（Shader HLSL）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B2%BE%E5%BA%A6%E8%AE%A1%E7%AE%97"><span class="toc-number">3.3.</span> <span class="toc-text">精度计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E5%89%8D%E5%90%8E%E5%AF%B9%E6%AF%94"><span class="toc-number">3.4.</span> <span class="toc-text">压缩前后对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%B9%B3%E5%8F%B0%E5%B7%AE%E5%BC%82"><span class="toc-number">4.</span> <span class="toc-text">四、平台差异</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/10/25/SunShaft%E5%AE%B9%E7%A7%AF%E5%85%89/" title="SunShaft容积光"><img src="/img/sunshaft/sunshaft.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SunShaft容积光"/></a><div class="content"><a class="title" href="/2026/10/25/SunShaft%E5%AE%B9%E7%A7%AF%E5%85%89/" title="SunShaft容积光">SunShaft容积光</a><time datetime="2026-10-25T04:00:00.000Z" title="Created 2026-10-25 12:00:00">2026-10-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/22/%E9%A3%8E%E6%A0%BC%E5%8C%96%E5%A4%A9%E7%A9%BA%E7%90%83/" title="风格化天空球"><img src="/img/skybox/skybox.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="风格化天空球"/></a><div class="content"><a class="title" href="/2026/10/22/%E9%A3%8E%E6%A0%BC%E5%8C%96%E5%A4%A9%E7%A9%BA%E7%90%83/" title="风格化天空球">风格化天空球</a><time datetime="2026-10-22T08:22:13.000Z" title="Created 2026-10-22 16:22:13">2026-10-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/22/hello-world/" title="Hello World">Hello World</a><time datetime="2026-10-22T07:13:05.133Z" title="Created 2026-10-22 15:13:05">2026-10-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/23/%E8%87%AA%E5%AE%9A%E4%B9%89Tonemapping/" title="自定义Tonemapping"><img src="/img/tonemapping/Log2Tonemap16.9.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="自定义Tonemapping"/></a><div class="content"><a class="title" href="/2026/04/23/%E8%87%AA%E5%AE%9A%E4%B9%89Tonemapping/" title="自定义Tonemapping">自定义Tonemapping</a><time datetime="2026-04-23T13:53:00.000Z" title="Created 2026-04-23 21:53:00">2026-04-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/17/Float32%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/" title="Float32压缩算法"><img src="/img/float32/octahedron.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Float32压缩算法"/></a><div class="content"><a class="title" href="/2025/11/17/Float32%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/" title="Float32压缩算法">Float32压缩算法</a><time datetime="2025-11-17T01:45:00.000Z" title="Created 2025-11-17 09:45:00">2025-11-17</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Shin</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.1.260810</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.1.260810"></script><script src="/js/main.js?v=5.7.1.260810"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
