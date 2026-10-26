@@ -1,0 +1,377 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>基础知识（数学） | Hexo</title><meta name="author" content="Shin"><meta name="copyright" content="Shin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="掌握内容：【线性代数】 一、向量   向量：有大小和方向的有向线段；   标量：只有大小，没有方向的量；点乘：也称内积，点乘的结果是一个标量。   点乘：也称内积，点乘的结果是一个标量。对于向量a和向量b：   a和b的点积公式为：  要求一维向量a和向量b的行列数相同。点乘的几何意义是可以用来表征或计算两个向量之间的夹角，以及在b向量在a向量方向上的投影。   叉乘：又叫外积，叉乘的结果是一个向">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基础知识（数学）">
+<meta property="og:url" content="https://shinzm.github.io/2022/11/24/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%EF%BC%88%E6%95%B0%E5%AD%A6%EF%BC%89/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="掌握内容：【线性代数】 一、向量   向量：有大小和方向的有向线段；   标量：只有大小，没有方向的量；点乘：也称内积，点乘的结果是一个标量。   点乘：也称内积，点乘的结果是一个标量。对于向量a和向量b：   a和b的点积公式为：  要求一维向量a和向量b的行列数相同。点乘的几何意义是可以用来表征或计算两个向量之间的夹角，以及在b向量在a向量方向上的投影。   叉乘：又叫外积，叉乘的结果是一个向">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shinzm.github.io/img/math/temp_math2690.png">
+<meta property="article:published_time" content="2022-11-24T06:12:00.000Z">
+<meta property="article:modified_time" content="2026-10-26T02:32:13.153Z">
+<meta property="article:author" content="Shin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shinzm.github.io/img/math/temp_math2690.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "基础知识（数学）",
+  "url": "https://shinzm.github.io/2022/11/24/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%EF%BC%88%E6%95%B0%E5%AD%A6%EF%BC%89/",
+  "image": "https://shinzm.github.io/img/math/temp_math2690.png",
+  "datePublished": "2022-11-24T06:12:00.000Z",
+  "dateModified": "2026-10-26T02:32:13.153Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Shin",
+      "url": "https://shinzm.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://shinzm.github.io/2022/11/24/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%EF%BC%88%E6%95%B0%E5%AD%A6%EF%BC%89/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.1.260810"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '基础知识（数学）',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">基础知识（数学）</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">基础知识（数学）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-11-24T06:12:00.000Z" title="Created 2022-11-24 14:12:00">2022-11-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-10-26T02:32:13.153Z" title="Updated 2026-10-26 10:32:13">2026-10-26</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><p>掌握内容：【线性代数】</p>
+<h2 id="一、向量">一、向量</h2>
+<ul>
+<li>
+<p>向量：有大小和方向的有向线段；</p>
+</li>
+<li>
+<p>标量：只有大小，没有方向的量；点乘：也称内积，点乘的结果是一个标量。</p>
+</li>
+</ul>
+<p><strong>点乘</strong>：也称内积，点乘的结果是一个标量。对于向量a和向量b：</p>
+<p><img src="/img/math/temp_math214.png" alt=""></p>
+<p><img src="/img/math/temp_math366.png" alt=""></p>
+<p>a和b的点积公式为：</p>
+<p><img src="/img/math/temp_math530.png" alt=""></p>
+<p>要求一维向量a和向量b的行列数相同。点乘的几何意义是可以用来表征或计算两个向量之间的夹角，以及在b向量在a向量方向上的投影。</p>
+<p><img src="/img/math/temp_math747.png" alt=""></p>
+<p><img src="/img/math/temp_math900.png" alt=""></p>
+<p><strong>叉乘</strong>：又叫外积，叉乘的结果是一个向量。并且两个向量的叉积与这两个向量组成的坐标平面垂直。对于向量a和向量b：</p>
+<p><img src="/img/math/temp_math1109.png" alt=""></p>
+<p>在三维几何中，向量a和向量b的叉乘结果被称为<strong>法向量</strong>，该向量垂直于a和b向量构成的平面。</p>
+<p><img src="/img/math/temp_math1305.png" alt=""></p>
+<h2 id="二、矩阵">二、矩阵</h2>
+<p>矩阵×矩阵=矩阵（所有的复合操作可以总结为一个总得矩阵）</p>
+<p>矩阵×向量=向量（一个变换矩阵对向量进行Transform）</p>
+<p>矩阵相乘顺序从右往左。坐标变换顺序：缩放-&gt;旋转-&gt;平移，即 <strong>[平移][旋转][缩放][向量]</strong></p>
+<p><img src="/img/math/temp_math1577.png" alt=""></p>
+<p>常见矩阵：</p>
+<p><img src="/img/math/temp_math1733.png" alt=""></p>
+<p><img src="/img/math/temp_math1889.png" alt=""></p>
+<p><strong>矩阵变换</strong>：模型空间-世界空间-观察空间-裁剪空间-屏幕空间</p>
+<p><strong>MVP矩阵</strong>：MVP矩阵是模型(Model)、观察(View)、投影(Projection)三个矩阵。顶点坐标起始于局部坐标(Local Coordinate)，之后会变为世界坐标(World Coordinate)，观察坐标(View Coordinate)，裁剪坐标(Clip Coordinate)，并最后以屏幕坐标(Screen Coordinate)的形式结束。</p>
+<p><img src="/img/math/temp_math2261.png" alt=""></p>
+<ol>
+<li>
+<p><strong>模型空间</strong>：局部坐标是对象相对于局部原点的坐标，也是物体起始的坐标。</p>
+</li>
+<li>
+<p><strong>世界空间</strong>：指顶点相对于（游戏）世界的坐标。</p>
+</li>
+<li>
+<p><strong>观察空间</strong>：从摄像机的视角所观察到的空间</p>
+</li>
+<li>
+<p><strong>裁剪空间</strong>：在一个顶点着色器运行的最后，OpenGL期望所有的坐标都能落在一个特定的范围内，且任何在这个范围之外的点都应该被裁剪掉(Clipped)。被裁剪掉的坐标就会被忽略，所以剩下的坐标就将变为屏幕上可见的片段。</p>
+</li>
+</ol>
+<ul>
+<li>
+<p><strong>观察矩阵(View Matrix)</strong>：让观察空间的坐标系移到世界空间的坐标系</p>
+</li>
+<li>
+<p><strong>投影矩阵(Projection Matrix)</strong>：判断顶点是否在可见范围内。</p>
+</li>
+</ul>
+<p><img src="/img/math/temp_math2690.png" alt=""></p>
+<p>常用矩阵：</p>
+<ul>
+<li><strong>UNITY_MATRIX_MVP</strong>:投影矩阵，用于将顶点/方向从模型空间变换到裁剪空间</li>
+<li><strong>UNITY_MATRIX_V[2].xyz</strong>：表示相机的朝向，即C #代码里的transform.forward</li>
+<li><strong>UNITY_MATRIX_T_MV</strong>： 转置矩阵</li>
+<li><strong>UNITY_MATRIX_IT_MV</strong>： 逆转置矩阵</li>
+</ul>
+<p>获取模型中心点世界坐标的几种写法:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">float3 center = float3(unity_ObjectToWorld[0].w, unity_ObjectToWorld[1].w, unity_ObjectToWorld[2].w);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">float3 center = float3(unity_ObjectToWorld._m03, unity_ObjectToWorld._m13, unity_ObjectToWorld._m23);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">float3 center = mul(unity_ObjectToWorld , float(0,0,0,1)).xyz;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">float3 center = unity_ObjectToWorld._14_24_34;</span><br></pre></td></tr></table></figure>
+<h2 id="三、空间">三、空间</h2>
+<p><strong>齐次裁剪空间</strong>：从观察空间到裁剪空间，用于C变换的矩阵叫做裁剪矩阵。裁剪空间的目标是能够方便地对渲染图源进行裁剪：完全位于这块空间内部的图元将会被保留，完全位于这块空间外部的图元将会被剔除，而与这块空间边界相交的图元就会被裁剪。</p>
+<p><strong>NDC</strong>:标准化设备坐标。是一个长宽高取值范围为[-1,1]的立方体，超过这个范围的顶点，会被GPU剪裁。</p>
+<p><img src="/img/math/temp_math3506.png" alt=""></p>
+<p><strong>注</strong>：在DirectX里面，NDC的z方向取值范围是[0,1]，在.0，DirectX中是0.0。</p>
+<p><strong>切线空间（TBN）</strong></p>
+<p><strong>为什么要有切线空间?</strong></p>
+<p>实际上，法线本身存储在哪个坐标系中都是可以的，例如存储在World Space、或者Object Space、或者Tangent Space中。但问题是，我们并不是单纯的想要得到法线，后续的光照计算才是我们的目的。不管使用哪个坐标系，都面临着一个选择，就是最后光照计算使用的坐标系究竟是哪个。对于Tangent-Space Normal Map，我们一般就是在Tangent Space里计算的，也就是说，我们需要把viewDir、lightDir在Vertex Shader中转换到Tangent Space中，然后在Fragment Shader对法线纹理采样后，直接进行光照计算。</p>
+<p><strong>为什么切线空间的法线贴图整体偏蓝?</strong></p>
+<ul>
+<li>
+<p>归一化之后，法线每个点的取值范围应该都在[-1, 1]之间，但是由于切线空间中任意一点的法线与N坐标轴的夹角都小于90度，也就是说法线的&quot;z值会大于零，所以取值范围为[0, 1]。通常情况下，法线坐标的存储范围在[0, 1]之间，所以要进行映射，映射之后z值的范围就变成了[0.5, 1]，而z值对应的就是RGB通道中的B通道，所以导致法线贴图的颜色整体偏蓝。</p>
+</li>
+<li>
+<p>模型空间的法线纹理，所有法线的坐标都是在模型空间，每个点存储的法线方向都是各异的，经过映射之后就变成了RGB(x,y,z) ，而x，y，z并不一致，所以对应着不同的颜色。所以模型空间的法线纹理看起来是五颜六色的。</p>
+</li>
+<li>
+<p>切线空间的法线纹理，所有法线的坐标都是在各自的切线空间，新的法线方向就是 Z 轴，即（0,0,1），经过映射就是（0.5,0.5,1）浅蓝色。所以切线空间的法线纹理看上去大部分都是蓝色的，这也说明了顶点的大部分法线是和模型本身法线一样的。</p>
+<p>切线空间的法线纹理还有如下一些优点：</p>
+<p>① <strong>自由度高</strong>。记录的是相对法线信息，这意味着，即便把该纹理应用到一个完全不同的网格上，也可以得到一个合理的结果。</p>
+<p>② <strong>可以制作UV动画</strong>。我们可以移动一个纹理的UV坐标来实现一个凹凸移动的效果。</p>
+<p>③ <strong>可以压缩</strong>。由于切线空间的法线的Z方向总是正方向的，因此我们可以仅存储XY方向，而推导得到Z方向。</p>
+<p>④ <strong>可以重复利用</strong>。比我们可以仅使用一张Normal Map就可以用到正方体所有的六个面上。</p>
+</li>
+</ul>
+<p>快速判断OpenGL和DirectX法线的技巧:</p>
+<p><img src="/img/math/temp_math4749.png" alt=""></p>
+<h2 id="四、函数">四、函数</h2>
+<p><strong>abs(a)</strong>：返回a的绝对值</p>
+<p><strong>round(x)</strong>：返回与x最近的整数</p>
+<p><strong>sqrt(x)</strong>：返回x的平方根</p>
+<p><strong>pow(x,y)</strong>：x的y次幂</p>
+<p><strong>exp(x)</strong>：返回e为底的指数函数</p>
+<p><strong>log(x)</strong>：返回e为底的对数函数</p>
+<p><strong>ceil(x)</strong>：返回&gt;=x的最小整数</p>
+<p><strong>floor(x)</strong>：返回&lt;=x的最大整数</p>
+<p><strong>frac(x)</strong>:返回x的小数部分</p>
+<p><strong>step(x,y)</strong>：x&lt;=y为1，否则为0</p>
+<p><strong>saturate(x)</strong>：返回将x钳制到0和1之间的值</p>
+<p><strong>clamp(x,min,max)</strong>：把x限制在[min,max]范围内，小于返回min，大于返回max</p>
+<p><strong>fmord(x,y)</strong>：返回x对y取余的余数</p>
+<p><strong>lerp(x,y,s)</strong>：按照s在x到y直接插值，即返回x*(1-s)+y*s</p>
+<p><strong>smoothstep(min,max,x)</strong>：如果x在[min,max]范围内，则返回介于0和1之间的平滑Hermite插值，使用smoothstep在两个值之间创建平滑过渡</p>
+<p><strong>clip(x)</strong>：如果输入值小于0，则丢弃当前像素，常用于判定范围</p>
+<p><strong>sign(x)</strong>：返回x的正负性。如果x&lt;0返回-1，如果x=0返回0，如果x&gt;0返回1</p>
+<p><strong>length(x)</strong>：返回向量的长度</p>
+<p><strong>normalize(v)</strong>：向量归一化</p>
+<p><strong>distance(a,b)</strong>：返回两个向量之间的距离，按理说应该为0，此处表示为根号下各分量之差的平方和</p>
+<p><strong>dot(a,b)</strong>：返回a和b两个向量的点积</p>
+<p><strong>cross(a,b)</strong>：返回a和b两个向量的叉积</p>
+<p><strong>transpose(m)</strong>：返回矩阵m的转置矩阵</p>
+<p><strong>reflect(i,n)</strong>：以i为入射方向m为法线方向的反射光</p>
+<p><strong>refract(i,n,ri)</strong>：以i为入射方向m为法线方向,ri为折射率的折射光</p>
+<p><strong>ddx(x)</strong>:参数 x对应一个像素位置，返回该像素值在 X 轴上的偏导数</p>
+<p><strong>Sigmoid</strong>:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/1924619372414109056/">【CG数学】更好的参数控制：Sigmoid</a></li>
+</ul>
+<p>以下为列表（用|隔开的数据，前面的部分是计算单分量时的指令数，后面的部分是计算float4时的指令数）</p>
+<p><img src="/img/math/temp_math5772.png" alt=""></p>
+<p>总结一下便是：</p>
+<p>反三角函数非常费</p>
+<p>abs和saturate是免费的</p>
+<p>除了反三角函数外，fmod和smoothstep比预期更费</p>
+<p>log,exp,sqrt（单分量）的成本实际上很低，所以由他们组合成的pow也不高</p>
+<p>sin,cos在DX11使用了专门一条单指令，成为了低成本函数</p>
+<p>ddx和ddy的含义和应用</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1wC2PBYENn/?t=24&amp;spm_id_from=333.1007.tianma.1-1-1.click&amp;vd_source=da56a10de51150fdb864c97e8dc6cada">【Bilibili】ddx和ddy的含义和应用</a></li>
+</ul>
+<h2 id="五、公式">五、公式</h2>
+<p><img src="/img/math/temp_math6091.jpg" alt=""></p>
+<p>PS中各种混合模式对应公式</p>
+<p><strong>Fov计算公式</strong></p>
+<p>投影矩阵通常采用透视投影形式，FOV 可以通过矩阵元素计算得出。</p>
+<p>假设投影矩阵为P，垂直 FOV 的计算公式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fov_y = 2 * atan(1 / P[1][1])</span><br></pre></td></tr></table></figure>
+<p>将弧度转换为角度</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fov_y_degrees = fov_y * (180 / π)</span><br></pre></td></tr></table></figure>
+<p><strong>法线压缩算法</strong></p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Vector4 <span class="title">DecompressNormal</span>(<span class="params"><span class="built_in">float</span> compressedValue</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">uint</span> compressedValueInt = System.BitConverter.ToUInt32(System.BitConverter.GetBytes(compressedValue), <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分别计算 x, y, z 轴的 normalOSInt</span></span><br><span class="line">    <span class="built_in">int</span> x = Extract10BitSigned(compressedValueInt,<span class="number">22</span>);  <span class="comment">// 0-9 bit</span></span><br><span class="line">    <span class="built_in">int</span> y = Extract10BitSigned(compressedValueInt,<span class="number">12</span>);  <span class="comment">// 10-19 bit</span></span><br><span class="line">    <span class="built_in">int</span> z = Extract10BitSigned(compressedValueInt,<span class="number">2</span>);   <span class="comment">// 20-29 bit</span></span><br><span class="line"></span><br><span class="line">    Vector4 normal;</span><br><span class="line">    normal.x = x * <span class="number">0.002f</span>;</span><br><span class="line">    normal.y = y * <span class="number">0.002f</span>;</span><br><span class="line">    normal.z = z * <span class="number">0.002f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">int</span> sign = (<span class="built_in">int</span>)(compressedValueInt &gt;&gt; <span class="number">31</span>);</span><br><span class="line">    normal.w = sign * <span class="number">2.0f</span> - <span class="number">1.0f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> normal;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">Extract10BitSigned</span>(<span class="params"><span class="built_in">uint</span> <span class="keyword">value</span>, <span class="built_in">int</span> offset</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">int</span> bits = (<span class="built_in">int</span>)(<span class="keyword">value</span> &lt;&lt; offset);</span><br><span class="line">    <span class="keyword">return</span> bits &gt;&gt; <span class="number">22</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考">参考</h2>
+<p>^<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/65969162">https://zhuanlan.zhihu.com/p/65969162</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://shinzm.github.io">Shin</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://shinzm.github.io/2022/11/24/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%EF%BC%88%E6%95%B0%E5%AD%A6%EF%BC%89/">https://shinzm.github.io/2022/11/24/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%EF%BC%88%E6%95%B0%E5%AD%A6%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/math/temp_math2690.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/07/31/%E8%83%BD%E9%87%8F%E7%9B%BE/" title="能量盾"><img class="cover" src="/img/shield/ripple.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">能量盾</div></div><div class="info-2"><div class="info-item-1">一、分析 对能量盾的渲染进行拆解。  渲染部分：基础颜色、表面纹理。 交互部分：消融、涟漪效果。  虽然内容不多，可拓展性还是很大的。 二、基础颜色 能量盾基础颜色主要为底色和边缘光。底色不用提，半透明材质给个颜色即可，边缘光即 Fresnel。在两个值之间插值过渡。 123//fresnelhalf rim = pow(1 - abs(dot(normalDir, viewDir)), _RimPower) * _RimInt;half4 range = _RimCol * lerp(_BaseInt, 1, rim);  能量罩的大形就已经有了，后续只需要在此基础上添加细节即可。  可以看到在能量罩与其他物体的交界处，接缝较为明显，没有边缘光。我们可以通过当前能量罩的深度和场景的深度做对比，当深度相等时，则说明能量罩和物体是相交的。如果我们将两个深度的插值控制在一定范围内，则可以得到从交接部分向外延伸的部分。 123456789//verto.scrPos = ComputeScreenPos(o.vertex);COMPUTE_EYEDEPTH(o.scrPos.z);//...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://github.com/shinzm.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Shin</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">12</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/shinzm" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%90%91%E9%87%8F"><span class="toc-number">1.</span> <span class="toc-text">一、向量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%9F%A9%E9%98%B5"><span class="toc-number">2.</span> <span class="toc-text">二、矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%A9%BA%E9%97%B4"><span class="toc-number">3.</span> <span class="toc-text">三、空间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%87%BD%E6%95%B0"><span class="toc-number">4.</span> <span class="toc-text">四、函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%85%AC%E5%BC%8F"><span class="toc-number">5.</span> <span class="toc-text">五、公式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">6.</span> <span class="toc-text">参考</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/26/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%EF%BC%88%E4%BC%98%E5%8C%96%EF%BC%89/" title="基础知识（优化）">基础知识（优化）</a><time datetime="2026-10-25T16:00:00.000Z" title="Created 2026-10-26 00:00:00">2026-10-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/25/Multi-Billboard/" title="Multi-Billboard"><img src="/img/billboard/mutlibillboard.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Multi-Billboard"/></a><div class="content"><a class="title" href="/2026/10/25/Multi-Billboard/" title="Multi-Billboard">Multi-Billboard</a><time datetime="2026-10-25T15:30:00.000Z" title="Created 2026-10-25 23:30:00">2026-10-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/25/%E6%9D%90%E8%B4%A8%E7%AA%97%E5%8F%A3%E5%B7%A5%E5%85%B7/" title="材质窗口工具">材质窗口工具</a><time datetime="2026-10-25T14:37:00.000Z" title="Created 2026-10-25 22:37:00">2026-10-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/25/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%85%89%E7%85%A7%E8%A1%B0%E5%87%8F/" title="自定义光照衰减"><img src="/img/lightatt/lightatten.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="自定义光照衰减"/></a><div class="content"><a class="title" href="/2026/10/25/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%85%89%E7%85%A7%E8%A1%B0%E5%87%8F/" title="自定义光照衰减">自定义光照衰减</a><time datetime="2026-10-25T08:00:00.000Z" title="Created 2026-10-25 16:00:00">2026-10-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/25/%E9%AB%98%E8%B4%A8%E9%87%8FBloom/" title="高质量Bloom"><img src="/img/bloom/mixbloom.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="高质量Bloom"/></a><div class="content"><a class="title" href="/2026/10/25/%E9%AB%98%E8%B4%A8%E9%87%8FBloom/" title="高质量Bloom">高质量Bloom</a><time datetime="2026-10-25T08:00:00.000Z" title="Created 2026-10-25 16:00:00">2026-10-25</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Shin</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.1.260810</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.1.260810"></script><script src="/js/main.js?v=5.7.1.260810"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    try {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/katex@0.18.1/dist/katex.min.css')
+      if (false) {
+        await btf.getScript('https://cdn.jsdelivr.net/npm/katex@0.18.1/dist/contrib/copy-tex.min.js')
+      }
+    } catch (e) {
+      console.error('[katex] failed to load assets, showing formulas anyway:', e)
+    }
+  }
+
+  showKatex()
+  btf.addGlobalFn('encrypt', showKatex, 'katex')
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
