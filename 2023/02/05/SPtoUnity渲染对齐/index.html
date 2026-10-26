@@ -1,0 +1,292 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>SPtoUnity渲染对齐 | Hexo</title><meta name="author" content="Shin"><meta name="copyright" content="Shin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、目的 解决substance painter制作好的模型贴图导入到unity效果不一致的问题，不能所见即所得，影响美术工作效率。保证Dcc软件和Unity的效果对齐是完善美术工业制作流程中不可或缺的一环。 二、设置同步  在SubstancePainter和Unity内选用相同的光照环境(Enivronment Map)的HDRI图。Enviroment Opacity调成100,完全显示.E">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SPtoUnity渲染对齐">
+<meta property="og:url" content="https://shinzm.github.io/2023/02/05/SPtoUnity%E6%B8%B2%E6%9F%93%E5%AF%B9%E9%BD%90/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、目的 解决substance painter制作好的模型贴图导入到unity效果不一致的问题，不能所见即所得，影响美术工作效率。保证Dcc软件和Unity的效果对齐是完善美术工业制作流程中不可或缺的一环。 二、设置同步  在SubstancePainter和Unity内选用相同的光照环境(Enivronment Map)的HDRI图。Enviroment Opacity调成100,完全显示.E">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shinzm.github.io/img/spto/temp_spto4444.png">
+<meta property="article:published_time" content="2023-02-05T08:22:00.000Z">
+<meta property="article:modified_time" content="2026-10-26T03:06:01.797Z">
+<meta property="article:author" content="Shin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shinzm.github.io/img/spto/temp_spto4444.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "SPtoUnity渲染对齐",
+  "url": "https://shinzm.github.io/2023/02/05/SPtoUnity%E6%B8%B2%E6%9F%93%E5%AF%B9%E9%BD%90/",
+  "image": "https://shinzm.github.io/img/spto/temp_spto4444.png",
+  "datePublished": "2023-02-05T08:22:00.000Z",
+  "dateModified": "2026-10-26T03:06:01.797Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Shin",
+      "url": "https://shinzm.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://shinzm.github.io/2023/02/05/SPtoUnity%E6%B8%B2%E6%9F%93%E5%AF%B9%E9%BD%90/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.1.260810"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SPtoUnity渲染对齐',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">SPtoUnity渲染对齐</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">SPtoUnity渲染对齐</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-02-05T08:22:00.000Z" title="Created 2023-02-05 16:22:00">2023-02-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-10-26T03:06:01.797Z" title="Updated 2026-10-26 11:06:01">2026-10-26</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="一、目的">一、目的</h2>
+<p>解决substance painter制作好的模型贴图导入到unity效果不一致的问题，不能所见即所得，影响美术工作效率。保证Dcc软件和Unity的效果对齐是完善美术工业制作流程中不可或缺的一环。</p>
+<h2 id="二、设置同步">二、设置同步</h2>
+<ol>
+<li>在SubstancePainter和Unity内选用相同的光照环境(Enivronment Map)的HDRI图。Enviroment Opacity调成100,完全显示.Environment Blur改成0,不要模糊.方便观察周围环境。</li>
+</ol>
+<p><img src="/img/spto/temp_spto236.png" alt=""></p>
+<p>着色器默认使用的是pbr-metal-rough。</p>
+<p><img src="/img/spto/temp_spto285.png" alt=""></p>
+<p>导出相关贴图，选择输出模板，这里我的模板多加了ao通道贴图。</p>
+<p><img src="/img/spto/temp_spto339.png" alt=""></p>
+<p>这里我的模板多加了ao通道贴图，设置如下。</p>
+<p><img src="/img/spto/temp_spto384.png" alt=""></p>
+<p>得到贴图如下：</p>
+<p><img src="/img/spto/temp_spto415.png" alt=""></p>
+<p>2.Unity使用相同的环境球。</p>
+<p><img src="/img/spto/temp_spto455.png" alt=""></p>
+<p>光照设置如下，可暂时关闭场景中的直射光。</p>
+<p><img src="/img/spto/temp_spto499.png" alt=""></p>
+<p>贴图设置，除Albedo外，其他贴图取消勾选sRGB。</p>
+<p><img src="/img/spto/temp_spto550.png" alt=""></p>
+<p>材质球的设置，将贴图放入对应通道即可。</p>
+<p><img src="/img/spto/temp_spto593.png" alt=""></p>
+<p>3.sp和Unity效果对比,可以发现sp的效果相比Unity暗部较暗。</p>
+<p><img src="/img/spto/temp_spto653.png" alt=""></p>
+<p><img src="/img/spto/temp_spto676.png" alt=""></p>
+<h2 id="三、渲染同步">三、渲染同步</h2>
+<p>sp默认的shader都放在Adobe Substance 3D Painter\resources\starter_assets\shaders目录下，参考glsl的编写结构，就可以重新自定义shader（注：需要实时刷新shader，不能放在默认目录下，选择导入文件，右键reload即可）。</p>
+<p>sp自定义shader可参考：</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/357509579">https://zhuanlan.zhihu.com/p/357509579</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/420298922">https://zhuanlan.zhihu.com/p/420298922</a></p>
+<p>使用sp的pbr输出局部光照和unity的对比：</p>
+<p>Indirect Diffuse：基本相同</p>
+<p><img src="/img/spto/temp_spto919.png" alt=""></p>
+<p>Indirect Specular：Unity的环境高光菲涅尔更加强烈</p>
+<p><img src="/img/spto/temp_spto978.png" alt=""></p>
+<p>差异分析：</p>
+<p>环境光照计算方式不同：1.在引擎里，我们通常使用directional light作为主光源（忽略点光，聚光灯等）进行直接光照的计算，使用solid color/skybox/gradient生成球谐参数，计算indirect diffuse，使用cubemap计算indirect specular。2.sp通过重要性采样来计算specular（具体算法参看Real Shading in Unreal Engine 4）。参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/370581942">https://zhuanlan.zhihu.com/p/370581942</a></p>
+<p>根据Unity的环境光照计算实现重写GlossyEnvironmentReflection函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">half3 GlossyEnvironmentReflection(half3 reflectVector, half perceptualRoughness, half occlusion)</span><br><span class="line">&#123;</span><br><span class="line">#if !defined(_ENVIRONMENTREFLECTIONS_OFF)</span><br><span class="line">    half mip = PerceptualRoughnessToMipmapLevel(perceptualRoughness);</span><br><span class="line">    // half4 encodedIrradiance = SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, samplerunity_SpecCube0, reflectVector, mip);</span><br><span class="line">    half3 encodedIrradiance = envSampleLOD(reflectVector, mip);</span><br><span class="line">    // #if defined(UNITY_USE_NATIVE_HDR)</span><br><span class="line">    half3 irradiance = encodedIrradiance.rgb;</span><br><span class="line">    // #else</span><br><span class="line">    //     half3 irradiance = DecodeHDREnvironment(encodedIrradiance, unity_SpecCube0_HDR);</span><br><span class="line">    // #endif</span><br><span class="line"></span><br><span class="line">    return irradiance * occlusion;</span><br><span class="line">#endif // GLOSSY_REFLECTIONS</span><br><span class="line"></span><br><span class="line">    half3 _GlossyEnvironmentColor = half3(1,1,1); // !!TEMP</span><br><span class="line">    return _GlossyEnvironmentColor.rgb * occlusion;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再次对比可以看到在采用环境球相同LOD时，sp和unity在相同级别下的值无法相对应，其中sp的lod级别存在10级，unity有7级。下图为lod级别都为4：</p>
+<p><img src="/img/spto/temp_spto2306.png" alt=""></p>
+<p>此处对Mip进行重映射的近似模拟计算。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">#define UNITY_SPECCUBE_LOD_STEPS 6</span><br><span class="line"></span><br><span class="line">real PerceptualRoughnessToMipmapLevel(real perceptualRoughness, uint mipMapCount)</span><br><span class="line">&#123;</span><br><span class="line">    perceptualRoughness = perceptualRoughness * (1.7 - 0.7 * perceptualRoughness);</span><br><span class="line"></span><br><span class="line">    half mip = pow(perceptualRoughness, 0.4);</span><br><span class="line">    //mip = pow( mip, 0.3 );</span><br><span class="line">    //mip *= 0.97;</span><br><span class="line"></span><br><span class="line">    //float unity_environment_lod_count = float(unity_specularprobe_lod_count);</span><br><span class="line"></span><br><span class="line">#if 0</span><br><span class="line">    const float mipmap_end = environment_max_lod - environment_mipmap_bias;</span><br><span class="line">    const float mipmap_start = mipmap_end - UNITY_SPECCUBE_LOD_STEPS;</span><br><span class="line">#elif 0</span><br><span class="line">    const float mipmap_start = max( 0, environment_max_lod - unity_environment_lod_count );</span><br><span class="line">    const float mipmap_end = min( unity_environment_lod_count, mipmap_start + UNITY_SPECCUBE_LOD_STEPS );</span><br><span class="line">#elif 0</span><br><span class="line">    const float mipmap_start = 0;</span><br><span class="line">    const float mipmap_scale = environment_max_lod / unity_environment_lod_count;</span><br><span class="line">    const float mipmap_tail = ( unity_environment_lod_count - UNITY_SPECCUBE_LOD_STEPS ) * mipmap_scale - 1;</span><br><span class="line">    const float mipmap_end = min( environment_max_lod, environment_max_lod - mipmap_tail*1.2 );</span><br><span class="line">#elif 1</span><br><span class="line">    const float mipmap_start = 0;</span><br><span class="line">    const float mipmap_end = environment_max_lod - 1.5;</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">    return mip * ( mipmap_end - mipmap_start ) + mipmap_start;</span><br><span class="line">    // return perceptualRoughness * mipMapCount;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对比：</p>
+<p><img src="/img/spto/temp_spto3601.png" alt=""></p>
+<p>BackGI：基本相同</p>
+<p><img src="/img/spto/temp_spto3636.png" alt=""></p>
+<p>AO：sp的AO多乘了阴影，sp有对应选项可以取消阴影。</p>
+<p><img src="/img/spto/temp_spto3688.png" alt=""></p>
+<p>去除阴影之后（为与Unity效果相一致默认关闭）。</p>
+<p><img src="/img/spto/temp_spto3737.png" alt=""></p>
+<p>再回到原始的pbr上，可以看到两边的效果基本一致。</p>
+<p><img src="/img/spto/temp_spto3786.png" alt=""></p>
+<p><img src="/img/spto/temp_spto3809.png" alt=""></p>
+<p>添加直射光。在sp中利用shader定义主灯，并还原LightingPhysicallyBased的函数计算。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// get light</span><br><span class="line">Light mainLight = GetMainLight();</span><br><span class="line">mainLight.attenuation = getShadowFactor();</span><br><span class="line"></span><br><span class="line">LocalVectors vectors = computeLocalFrame(inputs);</span><br><span class="line"></span><br><span class="line">#ifdef _SPECULARHIGHLIGHTS_OFF</span><br><span class="line">    bool specularHighlightsOff = true;</span><br><span class="line">#else</span><br><span class="line">    bool specularHighlightsOff = false;</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">BRDFData brdfData;</span><br><span class="line">float smoothness = 1.0 - roughness;</span><br><span class="line">InitializeBRDFData(baseColor,metallic,smoothness, brdfData);</span><br><span class="line">vec3 lightbased=LightingPhysicallyBased(brdfData,mainLight,vectors.normal,vectors.eye,specularHighlightsOff);</span><br></pre></td></tr></table></figure>
+<p>直接光还原对比：</p>
+<p><img src="/img/spto/temp_spto4414.png" alt=""></p>
+<h2 id="四、最终效果">四、最终效果</h2>
+<p><img src="/img/spto/temp_spto4444.png" alt=""></p>
+<p>PS:对于自定义的shader可以自己根据glsl的语言进行shader转换。</p>
+<h2 id="四、参考">四、参考</h2>
+<p>^<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/370581942">https://zhuanlan.zhihu.com/p/370581942</a></p>
+<p>^<a target="_blank" rel="noopener" href="https://nagnae.wordpress.com/2018/08/05/substance-painters-shader-for-unity-%E4%B8%AD%E6%96%87/">https://nagnae.wordpress.com/2018/08/05/substance-painters-shader-for-unity-中文/</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://shinzm.github.io">Shin</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://shinzm.github.io/2023/02/05/SPtoUnity%E6%B8%B2%E6%9F%93%E5%AF%B9%E9%BD%90/">https://shinzm.github.io/2023/02/05/SPtoUnity%E6%B8%B2%E6%9F%93%E5%AF%B9%E9%BD%90/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/spto/temp_spto4444.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/07/31/%E8%83%BD%E9%87%8F%E7%9B%BE/" title="能量盾"><img class="cover" src="/img/shield/ripple.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">能量盾</div></div><div class="info-2"><div class="info-item-1">一、分析 对能量盾的渲染进行拆解。  渲染部分：基础颜色、表面纹理。 交互部分：消融、涟漪效果。  虽然内容不多，可拓展性还是很大的。 二、基础颜色 能量盾基础颜色主要为底色和边缘光。底色不用提，半透明材质给个颜色即可，边缘光即 Fresnel。在两个值之间插值过渡。 123//fresnelhalf rim = pow(1 - abs(dot(normalDir, viewDir)), _RimPower) * _RimInt;half4 range = _RimCol * lerp(_BaseInt, 1, rim);  能量罩的大形就已经有了，后续只需要在此基础上添加细节即可。  可以看到在能量罩与其他物体的交界处，接缝较为明显，没有边缘光。我们可以通过当前能量罩的深度和场景的深度做对比，当深度相等时，则说明能量罩和物体是相交的。如果我们将两个深度的插值控制在一定范围内，则可以得到从交接部分向外延伸的部分。 123456789//verto.scrPos = ComputeScreenPos(o.vertex);COMPUTE_EYEDEPTH(o.scrPos.z);//...</div></div></div></a><a class="pagination-related" href="/2022/11/24/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%EF%BC%88%E6%95%B0%E5%AD%A6%EF%BC%89/" title="基础知识（数学）"><img class="cover" src="/img/math/temp_math2690.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">基础知识（数学）</div></div><div class="info-2"><div class="info-item-1">掌握内容：【线性代数】 一、向量   向量：有大小和方向的有向线段；   标量：只有大小，没有方向的量；点乘：也称内积，点乘的结果是一个标量。   点乘：也称内积，点乘的结果是一个标量。对于向量a和向量b：   a和b的点积公式为：  要求一维向量a和向量b的行列数相同。点乘的几何意义是可以用来表征或计算两个向量之间的夹角，以及在b向量在a向量方向上的投影。   叉乘：又叫外积，叉乘的结果是一个向量。并且两个向量的叉积与这两个向量组成的坐标平面垂直。对于向量a和向量b：  在三维几何中，向量a和向量b的叉乘结果被称为法向量，该向量垂直于a和b向量构成的平面。  二、矩阵 矩阵×矩阵=矩阵（所有的复合操作可以总结为一个总得矩阵） 矩阵×向量=向量（一个变换矩阵对向量进行Transform） 矩阵相乘顺序从右往左。坐标变换顺序：缩放-&gt;旋转-&gt;平移，即 [平移][旋转][缩放][向量]  常见矩阵：   矩阵变换：模型空间-世界空间-观察空间-裁剪空间-屏幕空间 MVP矩阵：MVP矩阵是模型(Model)、观察(View)、投影(Projection)三个矩阵。顶点坐标起...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://github.com/shinzm.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Shin</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/shinzm" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%9B%AE%E7%9A%84"><span class="toc-number">1.</span> <span class="toc-text">一、目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%AE%BE%E7%BD%AE%E5%90%8C%E6%AD%A5"><span class="toc-number">2.</span> <span class="toc-text">二、设置同步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%B8%B2%E6%9F%93%E5%90%8C%E6%AD%A5"><span class="toc-number">3.</span> <span class="toc-text">三、渲染同步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%9C%80%E7%BB%88%E6%95%88%E6%9E%9C"><span class="toc-number">4.</span> <span class="toc-text">四、最终效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">四、参考</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/26/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%EF%BC%88%E4%BC%98%E5%8C%96%EF%BC%89/" title="基础知识（优化）">基础知识（优化）</a><time datetime="2026-10-25T16:00:00.000Z" title="Created 2026-10-26 00:00:00">2026-10-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/25/Multi-Billboard/" title="Multi-Billboard"><img src="/img/billboard/mutlibillboard.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Multi-Billboard"/></a><div class="content"><a class="title" href="/2026/10/25/Multi-Billboard/" title="Multi-Billboard">Multi-Billboard</a><time datetime="2026-10-25T15:30:00.000Z" title="Created 2026-10-25 23:30:00">2026-10-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/25/%E6%9D%90%E8%B4%A8%E7%AA%97%E5%8F%A3%E5%B7%A5%E5%85%B7/" title="材质窗口工具">材质窗口工具</a><time datetime="2026-10-25T14:37:00.000Z" title="Created 2026-10-25 22:37:00">2026-10-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/25/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%85%89%E7%85%A7%E8%A1%B0%E5%87%8F/" title="自定义光照衰减"><img src="/img/lightatt/lightatten.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="自定义光照衰减"/></a><div class="content"><a class="title" href="/2026/10/25/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%85%89%E7%85%A7%E8%A1%B0%E5%87%8F/" title="自定义光照衰减">自定义光照衰减</a><time datetime="2026-10-25T08:00:00.000Z" title="Created 2026-10-25 16:00:00">2026-10-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/25/%E9%AB%98%E8%B4%A8%E9%87%8FBloom/" title="高质量Bloom"><img src="/img/bloom/mixbloom.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="高质量Bloom"/></a><div class="content"><a class="title" href="/2026/10/25/%E9%AB%98%E8%B4%A8%E9%87%8FBloom/" title="高质量Bloom">高质量Bloom</a><time datetime="2026-10-25T08:00:00.000Z" title="Created 2026-10-25 16:00:00">2026-10-25</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Shin</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.1.260810</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.1.260810"></script><script src="/js/main.js?v=5.7.1.260810"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    try {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/katex@0.18.1/dist/katex.min.css')
+      if (false) {
+        await btf.getScript('https://cdn.jsdelivr.net/npm/katex@0.18.1/dist/contrib/copy-tex.min.js')
+      }
+    } catch (e) {
+      console.error('[katex] failed to load assets, showing formulas anyway:', e)
+    }
+  }
+
+  showKatex()
+  btf.addGlobalFn('encrypt', showKatex, 'katex')
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
